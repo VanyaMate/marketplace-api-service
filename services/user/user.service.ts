@@ -1,0 +1,108 @@
+import { IUserMapper, IUserService } from './user.interface';
+import { PublicUser, User } from './user.type';
+import { UserMapper } from './user.mapper';
+import { IStorage } from '../storage/storage.interface';
+import { StorageService } from '../storage/storage.service';
+import { StorageName } from '../../config/storage-names.config';
+import { NO_FIND, NO_VALID_DATA } from '../../config/errors.config';
+
+
+export class UserService implements IUserService<User, PublicUser> {
+    constructor (
+        public readonly mapper: IUserMapper<User, PublicUser>,
+        public readonly storage: IStorage<User>) {
+    }
+
+    create (login: string, password: string): Promise<User> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!login || !password) {
+                    reject(NO_VALID_DATA);
+                }
+
+                const users: User[] = this.storage.get();
+                const user: User    = {
+                    login   : login,
+                    password: password,
+                    avatar  : '',
+                };
+                users.push(user);
+                this.storage.set(users);
+
+                resolve(user);
+            }, 1000);
+        });
+    }
+
+    delete (login: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!login) {
+                    reject(NO_VALID_DATA);
+                }
+
+                const users: User[] = this.storage.get();
+                for (let i = 0; i < users.length; i++) {
+                    const user: User = users[i];
+                    if (user.login === login) {
+                        users.splice(i, 1);
+                        this.storage.set(users);
+                        resolve(true);
+                    }
+                }
+
+                reject(NO_FIND);
+            }, 1000);
+        });
+    }
+
+    read (login: string): Promise<User> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!login) {
+                    reject(NO_VALID_DATA);
+                }
+
+                const users: User[] = this.storage.get();
+                for (let i = 0; i < users.length; i++) {
+                    const user: User = users[i];
+                    if (user.login === login) {
+                        resolve(user);
+                    }
+                }
+
+                reject(NO_FIND);
+            }, 1000);
+        });
+    }
+
+    update (updateUser: User): Promise<User> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!updateUser) {
+                    reject(NO_VALID_DATA);
+                }
+
+                const users: User[] = this.storage.get();
+                for (let i = 0; i < users.length; i++) {
+                    const user: User = users[i];
+                    if (user.login === updateUser.login) {
+                        users[i] = updateUser;
+                        this.storage.set(users);
+                        resolve(updateUser);
+                    }
+                }
+
+                reject(NO_FIND);
+            }, 1000);
+        });
+    }
+}
+
+export default new UserService(
+    new UserMapper(),
+    new StorageService(
+        localStorage,
+        StorageName.USERS,
+    ),
+);
