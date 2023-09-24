@@ -1,9 +1,6 @@
 import { IUserMapper, IUserService } from './user.interface';
 import { PublicUser, User } from './user.type';
-import { UserMapper } from './user.mapper';
 import { IStorage } from '../storage/storage.interface';
-import { StorageService } from '../storage/storage.service';
-import { StorageName } from '../../config/storage-names.config';
 import { NO_FIND, NO_VALID_DATA } from '../../config/errors.config';
 
 
@@ -21,7 +18,12 @@ export class UserService implements IUserService<User, PublicUser> {
                 }
 
                 const users: User[] = this.storage.get();
-                const user: User    = {
+                for (let i = 0; i < users.length; i++) {
+                    if (users[i].login === login) {
+                        reject(NO_VALID_DATA);
+                    }
+                }
+                const user: User = {
                     login   : login,
                     password: password,
                     avatar  : '',
@@ -98,11 +100,3 @@ export class UserService implements IUserService<User, PublicUser> {
         });
     }
 }
-
-export default new UserService(
-    new UserMapper(),
-    new StorageService(
-        localStorage,
-        StorageName.USERS,
-    ),
-);
