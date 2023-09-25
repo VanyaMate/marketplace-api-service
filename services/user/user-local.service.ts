@@ -4,7 +4,7 @@ import { IStorage } from '../storage/storage.interface';
 import { NO_FIND, NO_VALID_DATA } from '../../config/errors.config';
 
 
-export class UserService implements IUserService<User, PublicUser> {
+export class UserLocalService implements IUserService<User, PublicUser> {
     constructor (
         public readonly mapper: IUserMapper<User, PublicUser>,
         public readonly storage: IStorage<User>) {

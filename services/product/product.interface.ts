@@ -7,7 +7,3 @@ export interface IProductService<T> {
 
     delete (id: string): Promise<boolean>;
 }
-
-export type IProductDataGenerator<T> = {
-
-}

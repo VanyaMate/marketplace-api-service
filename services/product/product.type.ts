@@ -1,6 +1,7 @@
 export type Product = {
     product_name: string
     brand: string
+    brand_name: string
     category: string
     price: number
     available: boolean
@@ -31,3 +32,7 @@ export type Product = {
     reviews: number
     rating: number
 }
+
+export type ProductCreateDto =
+    Partial<Omit<Product, 'barcode' | 'brand_name'>>
+    & Pick<Product, 'brand_name'>;

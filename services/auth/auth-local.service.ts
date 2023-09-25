@@ -3,13 +3,13 @@ import { IUserService } from '../user/user.interface';
 import { PublicUser, User } from '../user/user.type';
 import { NO_VALID_DATA } from '../../config/errors.config';
 import { IStorage } from '../storage/storage.interface';
-import { UserService } from '../user/user.service';
+import { UserLocalService } from '../user/user-local.service';
 import { UserMapper } from '../user/user.mapper';
 import { StorageService } from '../storage/storage.service';
 import { StorageName } from '../../config/storage-names.config';
 
 
-export class AuthService implements IAuthService {
+export class AuthLocalService implements IAuthService {
     constructor (
         private readonly userService: IUserService<User, PublicUser>,
         private readonly storageService: IStorage<string>,
@@ -72,8 +72,8 @@ export class AuthService implements IAuthService {
     }
 }
 
-export default new AuthService(
-    new UserService(
+export default new AuthLocalService(
+    new UserLocalService(
         new UserMapper(),
         new StorageService(
             localStorage,
