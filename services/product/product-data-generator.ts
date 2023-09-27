@@ -2,12 +2,12 @@ import { Product, ProductCreateDto } from './product.type';
 
 
 export class ProductDataGenerator {
-    full (product: ProductCreateDto = {}): Product {
+    full (product: ProductCreateDto): Product {
         return {
             ...{
-
                 product_name     : '',
                 brand            : '',
+                brand_name       : '',
                 category         : '',
                 price            : 0,
                 available        : false,

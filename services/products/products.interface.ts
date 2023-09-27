@@ -1,5 +1,10 @@
-export interface IProductsService {
-    findOne ();
+import { MultiplyResponse, SearchOptions } from '../.interface';
 
-    findMany ();
+
+export interface IProductsService<T> {
+    findOne (id: string): Promise<T>;
+
+    findMany (filters: Partial<T>, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
+
+    findManyByFilter (filter: (product: T) => boolean, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
 }

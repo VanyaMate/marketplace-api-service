@@ -1,7 +1,7 @@
 import { IUserMapper, IUserService } from './user.interface';
 import { PublicUser, User } from './user.type';
 import { IStorage } from '../storage/storage.interface';
-import { NO_FIND, NO_VALID_DATA } from '../../config/errors.config';
+import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 
 
 export class UserLocalService implements IUserService<User, PublicUser> {
@@ -53,7 +53,7 @@ export class UserLocalService implements IUserService<User, PublicUser> {
                     }
                 }
 
-                reject(NO_FIND);
+                reject(NOT_FOUND);
             }, 1000);
         });
     }
@@ -73,7 +73,7 @@ export class UserLocalService implements IUserService<User, PublicUser> {
                     }
                 }
 
-                reject(NO_FIND);
+                reject(NOT_FOUND);
             }, 1000);
         });
     }
@@ -95,7 +95,7 @@ export class UserLocalService implements IUserService<User, PublicUser> {
                     }
                 }
 
-                reject(NO_FIND);
+                reject(NOT_FOUND);
             }, 1000);
         });
     }

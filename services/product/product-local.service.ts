@@ -1,13 +1,13 @@
 import { IProductService } from './product.interface';
-import { Product, ProductCreateDto } from './product.type';
+import { Product, ProductCreateDto, ProductUpdateDto } from './product.type';
 import { IStorage } from '../storage/storage.interface';
 import { ProductDataGenerator } from './product-data-generator';
-import { NO_VALID_DATA } from '../../config/errors.config';
-import { StorageService } from '../storage/storage.service';
+import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
+import { StorageService } from '../storage/storage.service';
 
 
-export class ProductLocalService implements IProductService<Product> {
+export class ProductLocalService implements IProductService<Product, ProductCreateDto, ProductUpdateDto> {
     private readonly products: Product[] = [];
 
     constructor (
@@ -27,19 +27,73 @@ export class ProductLocalService implements IProductService<Product> {
                 this.products.push(createdProduct);
                 this.storage.set(this.products);
                 resolve(createdProduct);
-            }, 500);
+            }, 800);
         });
     }
 
     delete (id: string): Promise<boolean> {
-        return Promise.resolve(false);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!id) {
+                    reject(NO_VALID_DATA);
+                }
+                for (let i = 0; i < this.products.length; i++) {
+                    const product: Product = this.products[i];
+                    if (product.barcode === Number(id)) {
+                        this.products.splice(i, 1);
+                        this.storage.set(this.products);
+                        resolve(true);
+                    }
+                }
+                resolve(false);
+            }, 800);
+        });
     }
 
     read (id: string): Promise<Product> {
-        return Promise.resolve(undefined);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!id) {
+                    reject(NO_VALID_DATA);
+                }
+                for (let i = 0; i < this.products.length; i++) {
+                    const product: Product = this.products[i];
+                    if (product.barcode === Number(id)) {
+                        resolve(product);
+                    }
+                }
+                reject(NOT_FOUND);
+            }, 800);
+        });
     }
 
-    update (product: ProductCreateDto): Promise<Product> {
-        return Promise.resolve(undefined);
+    update (updateData: ProductUpdateDto): Promise<Product> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!updateData) {
+                    reject(NO_VALID_DATA);
+                }
+                for (let i = 0; i < this.products.length; i++) {
+                    const product: Product = this.products[i];
+                    if (product.barcode === updateData.barcode) {
+                        this.products[i] = {
+                            ...product,
+                            ...updateData,
+                        };
+                        this.storage.set(this.products);
+                        resolve(this.products[i]);
+                    }
+                }
+                reject(NOT_FOUND);
+            }, 800);
+        });
     }
 }
+
+export default new ProductLocalService(
+    new ProductDataGenerator(),
+    new StorageService(
+        localStorage,
+        StorageName.PRODUCTS,
+    ),
+);
