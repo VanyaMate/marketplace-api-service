@@ -31,32 +31,30 @@ export class ProductsService implements IProductsService<Product> {
     findMany (filters: Partial<Product>, options: SearchOptions<Product> = {}): Promise<MultiplyResponse<Product>> {
         return new Promise((resolve) => {
             setTimeout(() => {
-                new Parallel(() => {
-                    const filtered: Product[] = this.products.filter((product: Product) => {
-                        let approach = true;
+                const filtered: Product[] = this.products.filter((product: Product) => {
+                    let approach = true;
 
-                        Object.keys(filters).forEach((key: keyof Product) => {
-                            if (typeof product[key] === 'string') {
-                                if (!product[key].toString().includes(filters[key.toString()])) {
-                                    approach = false;
-                                    return;
-                                }
-                            } else if (product[key] !== filters[key]) {
+                    Object.keys(filters).forEach((key: keyof Product) => {
+                        if (typeof product[key] === 'string') {
+                            if (!product[key].toString().includes(filters[key.toString()])) {
                                 approach = false;
                                 return;
                             }
-                        });
-
-                        return approach;
+                        } else if (product[key] !== filters[key]) {
+                            approach = false;
+                            return;
+                        }
                     });
 
-                    resolve(
-                        this._getMultiplyResponse(
-                            options,
-                            this._getSorted(filtered, options),
-                        ),
-                    );
+                    return approach;
                 });
+
+                resolve(
+                    this._getMultiplyResponse(
+                        options,
+                        this._getSorted(filtered, options),
+                    ),
+                );
             }, 1200);
         });
     }
