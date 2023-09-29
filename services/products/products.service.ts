@@ -7,6 +7,8 @@ import { StorageName } from '../../config/storage-names.config';
 import product_1 from '../../data/products/products_1.json';
 import product_2 from '../../data/products/products_2.json';
 import { NO_VALID_DATA, NOT_FOUND } from '../../config/errors.config';
+import { ISeparator } from '@vanyamate/separator/separator.interface';
+import Separator from '@vanyamate/separator';
 
 
 export class ProductsService implements IProductsService<Product> {
@@ -30,8 +32,9 @@ export class ProductsService implements IProductsService<Product> {
 
     findMany (filters: Partial<Product>, options: SearchOptions<Product> = {}): Promise<MultiplyResponse<Product>> {
         return new Promise((resolve) => {
-            setTimeout(() => {
-                const filtered: Product[] = this.products.filter((product: Product) => {
+            setTimeout(async () => {
+                const separator: ISeparator = new Separator();
+                const filtered: Product[]   = await separator.filter(this.products, (product: Product) => {
                     let approach = true;
 
                     Object.keys(filters).forEach((key: keyof Product) => {
@@ -47,7 +50,7 @@ export class ProductsService implements IProductsService<Product> {
                     });
 
                     return approach;
-                });
+                }, { maxOperationsPerStep: 1000 });
 
                 resolve(
                     this._getMultiplyResponse(
