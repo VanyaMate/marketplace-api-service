@@ -50,7 +50,7 @@ export class ProductsService implements IProductsService<Product> {
                     });
 
                     return approach;
-                }, { maxOperationsPerStep: 1000 });
+                }, { maxOperationsPerStep: 100 });
 
                 resolve(
                     this._getMultiplyResponse(
@@ -101,8 +101,13 @@ export class ProductsService implements IProductsService<Product> {
         });
     }
 
-    private _getSorted (products: Product[], options: SearchOptions<Product>) {
+    private _getSorted (products: Product[], options: SearchOptions<Product> = this._defaultSearchOptions) {
+        if (!options.sort) {
+            return products;
+        }
+
         const [ sortOption, type ]: SortOption<Product> = options.sort;
+
         if (sortOption && type) {
             return products.sort((a: Product, b: Product) => {
                 if (typeof a[sortOption] === 'string') {
