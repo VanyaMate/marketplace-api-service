@@ -1,8 +1,8 @@
-import { ProductDataGenerator } from './product-data-generator.interface';
+import { IProductDataGenerator } from './product-data-generator.interface';
 import { Product, ProductCreateDto } from './product.type';
 
 
-export class ProductDefaultDataGenerator implements ProductDataGenerator<Product, ProductCreateDto> {
+export class ProductDefaultDataGenerator implements IProductDataGenerator<Product, ProductCreateDto> {
     full (product: ProductCreateDto): Product {
         return {
             ...{
