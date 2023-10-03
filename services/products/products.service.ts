@@ -12,6 +12,7 @@ import Separator from '@vanyamate/separator';
 
 
 export class ProductsService implements IProductsService<Product> {
+    private readonly _separator: ISeparator                        = new Separator();
     private readonly _products: Product[]                          = [];
     private readonly _defaultSearchOptions: SearchOptions<Product> = {
         limit : 10,
@@ -33,8 +34,7 @@ export class ProductsService implements IProductsService<Product> {
     findMany (filters: Partial<Product>, options: SearchOptions<Product> = {}): Promise<MultiplyResponse<Product>> {
         return new Promise((resolve) => {
             setTimeout(async () => {
-                const separator: ISeparator = new Separator();
-                const filtered: Product[]   = await separator.filter(this.products, (product: Product) => {
+                const filtered: Product[] = await this._separator.filter(this.products, (product: Product) => {
                     let approach = true;
 
                     Object.keys(filters).forEach((key: keyof Product) => {
@@ -64,18 +64,17 @@ export class ProductsService implements IProductsService<Product> {
 
     findManyByFilter (filter: (product: Product) => boolean, options: SearchOptions<Product> = {}): Promise<MultiplyResponse<Product>> {
         return new Promise((resolve, reject) => {
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (!filter) {
                     reject(NO_VALID_DATA);
                 }
 
+                const filtered: Product[] = await this._separator.filter(this.products, filter, { maxOperationsPerStep: 100 });
+
                 resolve(
                     this._getMultiplyResponse(
                         options,
-                        this._getSorted(
-                            this.products.filter(filter),
-                            options,
-                        ),
+                        this._getSorted(filtered, options),
                     ),
                 );
             }, 1200);
@@ -89,14 +88,14 @@ export class ProductsService implements IProductsService<Product> {
                     reject(NO_VALID_DATA);
                 }
 
-                for (let i = 0; i < this.products.length; i++) {
-                    const product = this.products[i];
-                    if (product.barcode === Number(id)) {
-                        resolve(product);
-                    }
-                }
-
-                reject(NOT_FOUND);
+                this._separator
+                    .findFirst<Product>(
+                        this.products,
+                        (product) => product.barcode === Number(id),
+                        { maxOperationsPerStep: 100 },
+                    )
+                    .then(resolve)
+                    .catch(() => reject(NOT_FOUND));
             }, 1200);
         });
     }
