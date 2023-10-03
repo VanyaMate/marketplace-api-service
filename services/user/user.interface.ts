@@ -1,13 +1,8 @@
-export interface IUserService<T, P> {
+import { IService } from '../service.interface';
+
+
+export interface IUserService<T, P, C, U> extends IService<T, C, U> {
     mapper: IUserMapper<T, P>;
-
-    create (login: string, password: string): Promise<T>;
-
-    read (login: string): Promise<T>;
-
-    update (user: T): Promise<T>;
-
-    delete (login: string): Promise<boolean>;
 }
 
 export interface IUserMapper<T, P> {

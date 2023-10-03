@@ -1,9 +1,5 @@
-export interface IProductService<T, C, U> {
-    create (product: C): Promise<T>;
+import { IService } from '../service.interface';
 
-    read (id: string): Promise<T>;
 
-    update (product: U): Promise<T>;
-
-    delete (id: string): Promise<boolean>;
+export interface IProductService<T, C, U> extends IService<T, C, U> {
 }

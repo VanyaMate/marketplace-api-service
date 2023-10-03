@@ -26,7 +26,7 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
                 if (!product) {
                     reject(NO_VALID_DATA);
                 }
-                const createdProduct: Product = this.generator.full(product);
+                const createdProduct: Product = this.generator.byData(product);
                 this.products.push(createdProduct);
                 this.storage.set(this.products);
                 resolve(createdProduct);

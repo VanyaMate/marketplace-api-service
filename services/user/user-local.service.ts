@@ -1,31 +1,31 @@
 import { IUserMapper, IUserService } from './user.interface';
-import { PublicUser, User } from './user.type';
+import { CreateUserDto, PublicUser, UpdateUserDto, User } from './user.type';
 import { IStorage } from '../storage/storage.interface';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 
 
-export class UserLocalService implements IUserService<User, PublicUser> {
+export class UserLocalService implements IUserService<User, PublicUser, CreateUserDto, UpdateUserDto> {
     constructor (
         public readonly mapper: IUserMapper<User, PublicUser>,
         public readonly storage: IStorage<User>) {
     }
 
-    create (login: string, password: string): Promise<User> {
+    create (createUserDto: CreateUserDto): Promise<User> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                if (!login || !password) {
+                if (!createUserDto) {
                     reject(NO_VALID_DATA);
                 }
 
                 const users: User[] = this.storage.get();
                 for (let i = 0; i < users.length; i++) {
-                    if (users[i].login === login) {
+                    if (users[i].login === createUserDto.login) {
                         reject(NO_VALID_DATA);
                     }
                 }
                 const user: User = {
-                    login   : login,
-                    password: password,
+                    login   : createUserDto.login,
+                    password: createUserDto.password,
                     avatar  : '',
                 };
                 users.push(user);
@@ -78,7 +78,7 @@ export class UserLocalService implements IUserService<User, PublicUser> {
         });
     }
 
-    update (updateUser: User): Promise<User> {
+    update (updateUser: UpdateUserDto): Promise<User> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (!updateUser) {
@@ -89,9 +89,10 @@ export class UserLocalService implements IUserService<User, PublicUser> {
                 for (let i = 0; i < users.length; i++) {
                     const user: User = users[i];
                     if (user.login === updateUser.login) {
-                        users[i] = updateUser;
+                        const newData = { ...user, ...updateUser };
+                        users[i]      = newData;
                         this.storage.set(users);
-                        resolve(updateUser);
+                        resolve(newData);
                     }
                 }
 
