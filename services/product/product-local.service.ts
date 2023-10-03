@@ -1,7 +1,10 @@
+import { ProductDataGenerator } from './product-data-generator.interface';
 import { IProductService } from './product.interface';
 import { Product, ProductCreateDto, ProductUpdateDto } from './product.type';
 import { IStorage } from '../storage/storage.interface';
-import { ProductDataGenerator } from './product-data-generator';
+import {
+    ProductDefaultDataGenerator,
+} from './product-default-data-generator';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
 import { StorageService } from '../storage/storage.service';
@@ -11,7 +14,7 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
     private readonly products: Product[] = [];
 
     constructor (
-        private readonly generator: ProductDataGenerator,
+        private readonly generator: ProductDataGenerator<Product, ProductCreateDto>,
         private readonly storage: IStorage<Product>,
     ) {
         this.products = [].concat(this.storage.get());
@@ -91,7 +94,7 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
 }
 
 export default new ProductLocalService(
-    new ProductDataGenerator(),
+    new ProductDefaultDataGenerator(),
     new StorageService(
         localStorage,
         StorageName.PRODUCTS,
