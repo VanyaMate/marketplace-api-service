@@ -12,7 +12,7 @@ import {
 } from './category.type';
 
 
-export class CategoryService implements ICategoryService<Category, CreateCategoryDto, UpdateCategoryDto> {
+export class CategoryLocalService implements ICategoryService<Category, CreateCategoryDto, UpdateCategoryDto> {
     private readonly _separator: ISeparator = new Separator();
     private _categories: Category[]         = [];
 
@@ -101,7 +101,7 @@ export class CategoryService implements ICategoryService<Category, CreateCategor
     }
 }
 
-export default new CategoryService(
+export default new CategoryLocalService(
     new StorageService(
         localStorage,
         StorageName.CATEGORIES,

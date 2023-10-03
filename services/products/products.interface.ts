@@ -1,10 +1,6 @@
-import { MultiplyResponse, SearchOptions } from '../.interface';
+import { IMultiplyService } from '../service.interface';
 
 
-export interface IProductsService<T> {
-    findOne (id: string): Promise<T>;
+export interface IProductsService<T> extends IMultiplyService<T> {
 
-    findMany (filters: Partial<T>, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
-
-    findManyByFilter (filter: (product: T) => boolean, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
 }
