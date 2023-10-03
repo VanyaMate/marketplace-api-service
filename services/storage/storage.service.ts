@@ -1,19 +1,19 @@
-import { IStorage } from './storage.interface';
+import { IStorageService } from './storage.interface';
 
 
-export class StorageService<T> implements IStorage<T> {
+export class StorageService<T> implements IStorageService<T> {
     constructor (
-        private readonly storage: Storage,
-        private readonly storageName: string,
+        private readonly _storage: Storage,
+        private readonly _storageName: string,
     ) {
     }
 
     get (): T[] {
-        const result: string | null = this.storage.getItem(this.storageName);
+        const result: string | null = this._storage.getItem(this._storageName);
         return result ? JSON.parse(result) : [];
     }
 
     set (items: T[]): void {
-        this.storage.setItem(this.storageName, JSON.stringify(items));
+        this._storage.setItem(this._storageName, JSON.stringify(items));
     }
 }

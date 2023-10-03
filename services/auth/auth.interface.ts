@@ -1,12 +1,9 @@
-import { PublicUser } from '../user/user.type';
+export interface IAuthService<T> {
+    login (login: string, password: string): Promise<T>;
 
+    registration (login: string, password: string): Promise<T>;
 
-export interface IAuthService {
-    login (login: string, password: string): Promise<PublicUser>;
-
-    registration (login: string, password: string): Promise<PublicUser>;
-
-    refresh (): Promise<PublicUser>;
+    refresh (): Promise<T>;
 
     logout (): Promise<void>;
 }

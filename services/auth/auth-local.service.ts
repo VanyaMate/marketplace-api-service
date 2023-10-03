@@ -1,28 +1,33 @@
 import { IAuthService } from './auth.interface';
 import { IUserService } from '../user/user.interface';
-import { PublicUser, User } from '../user/user.type';
+import {
+    CreateUserDto,
+    PublicUser,
+    UpdateUserDto,
+    User,
+} from '../user/user.type';
 import { NO_VALID_DATA } from '../../config/errors.config';
-import { IStorage } from '../storage/storage.interface';
+import { IStorageService } from '../storage/storage.interface';
 import { UserLocalService } from '../user/user-local.service';
 import { UserMapper } from '../user/user.mapper';
 import { StorageService } from '../storage/storage.service';
 import { StorageName } from '../../config/storage-names.config';
 
 
-export class AuthLocalService implements IAuthService {
+export class AuthLocalService implements IAuthService<PublicUser> {
     constructor (
-        private readonly userService: IUserService<User, PublicUser>,
-        private readonly storageService: IStorage<string>,
+        private readonly _userService: IUserService<User, PublicUser, CreateUserDto, UpdateUserDto>,
+        private readonly _storageService: IStorageService<string>,
     ) {
     }
 
     login (login: string, password: string): Promise<PublicUser> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                const user: User = await this.userService.read(login);
+                const user: User = await this._userService.read(login);
                 if (user.password === password) {
-                    const publicUser: PublicUser = this.userService.mapper.toPublic(user);
-                    this.storageService.set([ publicUser.login ]);
+                    const publicUser: PublicUser = this._userService.mapper.toPublic(user);
+                    this._storageService.set([ publicUser.login ]);
                     resolve(publicUser);
                 } else {
                     reject(NO_VALID_DATA);
@@ -34,7 +39,7 @@ export class AuthLocalService implements IAuthService {
     logout (): Promise<void> {
         return new Promise((resolve) => {
             setTimeout(() => {
-                this.storageService.set([]);
+                this._storageService.set([]);
                 resolve();
             }, 1000);
         });
@@ -43,16 +48,16 @@ export class AuthLocalService implements IAuthService {
     refresh (): Promise<PublicUser> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                const [ userLogin ]: string[] = this.storageService.get();
+                const [ userLogin ]: string[] = this._storageService.get();
                 if (!userLogin) {
                     reject();
                 }
-                const user: User = await this.userService.read(userLogin);
+                const user: User = await this._userService.read(userLogin);
                 if (!user) {
-                    this.storageService.set([]);
+                    this._storageService.set([]);
                     reject();
                 }
-                const publicUser: PublicUser = this.userService.mapper.toPublic(user);
+                const publicUser: PublicUser = this._userService.mapper.toPublic(user);
                 resolve(publicUser);
             }, 500);
         });
@@ -64,8 +69,11 @@ export class AuthLocalService implements IAuthService {
                 if (!login || !password) {
                     reject(NO_VALID_DATA);
                 }
-                const user: User             = await this.userService.create(login, password);
-                const publicUser: PublicUser = this.userService.mapper.toPublic(user);
+                const user: User             = await this._userService.create({
+                    login,
+                    password,
+                });
+                const publicUser: PublicUser = this._userService.mapper.toPublic(user);
                 resolve(publicUser);
             }, 800);
         });

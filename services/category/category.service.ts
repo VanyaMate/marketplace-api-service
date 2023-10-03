@@ -2,7 +2,7 @@ import Separator from '@vanyamate/separator';
 import { ISeparator } from '@vanyamate/separator/separator.interface';
 import { NO_VALID_DATA, NOT_FOUND } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
-import { IStorage } from '../storage/storage.interface';
+import { IStorageService } from '../storage/storage.interface';
 import { StorageService } from '../storage/storage.service';
 import { ICategoryService } from './category.interface';
 import {
@@ -16,8 +16,8 @@ export class CategoryService implements ICategoryService<Category, CreateCategor
     private readonly _separator: ISeparator = new Separator();
     private _categories: Category[]         = [];
 
-    constructor (private readonly storage: IStorage<Category>) {
-        this._categories = this.storage.get();
+    constructor (private readonly _storageService: IStorageService<Category>) {
+        this._categories = this._storageService.get();
     }
 
     public create (item: CreateCategoryDto): Promise<Category> {
@@ -34,7 +34,7 @@ export class CategoryService implements ICategoryService<Category, CreateCategor
                     })
                     .catch(() => {
                         this._categories.push(item);
-                        this.storage.set(this._categories);
+                        this._storageService.set(this._categories);
                         resolve(item);
                     });
             }, 960);
@@ -53,7 +53,7 @@ export class CategoryService implements ICategoryService<Category, CreateCategor
                     (category) => category !== id,
                     { maxOperationsPerStep: 100 },
                 );
-                this.storage.set(this._categories);
+                this._storageService.set(this._categories);
                 resolve(true);
             }, 800);
         });
@@ -95,7 +95,7 @@ export class CategoryService implements ICategoryService<Category, CreateCategor
                     }, { maxOperationsPerStep: 100 });
 
                 this._categories = categories;
-                this.storage.set(this._categories);
+                this._storageService.set(this._categories);
             }, 900);
         });
     }

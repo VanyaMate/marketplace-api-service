@@ -1,7 +1,7 @@
 import { IProductsService } from './products.interface';
 import { Product } from '../product/product.type';
 import { MultiplyResponse, SearchOptions, SortOption } from '../.interface';
-import { IStorage } from '../storage/storage.interface';
+import { IStorageService } from '../storage/storage.interface';
 import { StorageService } from '../storage/storage.service';
 import { StorageName } from '../../config/storage-names.config';
 import product_1 from '../../data/products/products_1.json';
@@ -21,14 +21,14 @@ export class ProductsService implements IProductsService<Product> {
     };
 
     constructor (
-        private readonly storage: IStorage<Product>,
+        private readonly _storageService: IStorageService<Product>,
         ...products: Product[][]
     ) {
         this._products = products.flat(1);
     }
 
     get products (): Product[] {
-        return [ ...this._products, ...this.storage.get() ];
+        return [ ...this._products, ...this._storageService.get() ];
     }
 
     findMany (filters: Partial<Product>, options: SearchOptions<Product> = {}): Promise<MultiplyResponse<Product>> {

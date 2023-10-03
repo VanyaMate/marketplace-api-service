@@ -1,13 +1,13 @@
 import { IUserMapper, IUserService } from './user.interface';
 import { CreateUserDto, PublicUser, UpdateUserDto, User } from './user.type';
-import { IStorage } from '../storage/storage.interface';
+import { IStorageService } from '../storage/storage.interface';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 
 
 export class UserLocalService implements IUserService<User, PublicUser, CreateUserDto, UpdateUserDto> {
     constructor (
         public readonly mapper: IUserMapper<User, PublicUser>,
-        public readonly storage: IStorage<User>) {
+        private readonly _storageService: IStorageService<User>) {
     }
 
     create (createUserDto: CreateUserDto): Promise<User> {
@@ -17,7 +17,7 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this.storage.get();
+                const users: User[] = this._storageService.get();
                 for (let i = 0; i < users.length; i++) {
                     if (users[i].login === createUserDto.login) {
                         reject(NO_VALID_DATA);
@@ -29,7 +29,7 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     avatar  : '',
                 };
                 users.push(user);
-                this.storage.set(users);
+                this._storageService.set(users);
 
                 resolve(user);
             }, 1000);
@@ -43,12 +43,12 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this.storage.get();
+                const users: User[] = this._storageService.get();
                 for (let i = 0; i < users.length; i++) {
                     const user: User = users[i];
                     if (user.login === login) {
                         users.splice(i, 1);
-                        this.storage.set(users);
+                        this._storageService.set(users);
                         resolve(true);
                     }
                 }
@@ -65,7 +65,7 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this.storage.get();
+                const users: User[] = this._storageService.get();
                 for (let i = 0; i < users.length; i++) {
                     const user: User = users[i];
                     if (user.login === login) {
@@ -85,13 +85,13 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this.storage.get();
+                const users: User[] = this._storageService.get();
                 for (let i = 0; i < users.length; i++) {
                     const user: User = users[i];
                     if (user.login === updateUser.login) {
                         const newData = { ...user, ...updateUser };
                         users[i]      = newData;
-                        this.storage.set(users);
+                        this._storageService.set(users);
                         resolve(newData);
                     }
                 }
