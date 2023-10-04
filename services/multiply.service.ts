@@ -71,7 +71,7 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
         });
     }
 
-    findOne (id: string): Promise<T> {
+    findOne (id: string): Promise<T | null> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (!id) {
@@ -84,8 +84,7 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                         (item: T) => this._findOneFilter(item, id),
                         { maxOperationsPerStep: 100 },
                     )
-                    .then(resolve)
-                    .catch(() => reject(NOT_FOUND));
+                    .then(resolve);
             }, 1200);
         });
     }

@@ -1,8 +1,7 @@
 import { IService } from '../service.interface';
 
 
-export interface IUserService<T, P, C, U> extends IService<T, C, U> {
-    mapper: IUserMapper<T, P>;
+export interface IUserService<T, C, U> extends IService<T, C, U> {
 }
 
 export interface IUserMapper<T, P> {

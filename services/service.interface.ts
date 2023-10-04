@@ -4,7 +4,7 @@ import { MultiplyResponse, SearchOptions } from './common.type';
 export interface IService<T, C, U> {
     create (item: C): Promise<T>;
 
-    read (id: string): Promise<T>;
+    read (id: string): Promise<T | null>;
 
     update (item: U): Promise<T>;
 
@@ -12,7 +12,7 @@ export interface IService<T, C, U> {
 }
 
 export interface IMultiplyService<T> {
-    findOne (id: string): Promise<T>;
+    findOne (id: string): Promise<T | null>;
 
     findMany (filters: Partial<T>, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
 

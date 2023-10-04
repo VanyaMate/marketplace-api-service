@@ -1,5 +1,5 @@
+import { SingleService } from '../single.service';
 import { IProductDataGenerator } from './product-data-generator.interface';
-import { IProductService } from './product.interface';
 import { Product, ProductCreateDto, ProductUpdateDto } from './product.type';
 import { IStorageService } from '../storage/storage.interface';
 import {
@@ -10,14 +10,12 @@ import { StorageName } from '../../config/storage-names.config';
 import { StorageService } from '../storage/storage.service';
 
 
-export class ProductLocalService implements IProductService<Product, ProductCreateDto, ProductUpdateDto> {
-    private readonly _products: Product[] = [];
-
+export class ProductLocalService extends SingleService<Product, ProductCreateDto, ProductUpdateDto> {
     constructor (
         private readonly _generator: IProductDataGenerator<Product, ProductCreateDto>,
-        private readonly _storageService: IStorageService<Product>,
+        _storageService: IStorageService<Product>,
     ) {
-        this._products = [].concat(this._storageService.get());
+        super(_storageService);
     }
 
     create (product: ProductCreateDto): Promise<Product> {
@@ -27,8 +25,8 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
                     reject(NO_VALID_DATA);
                 }
                 const createdProduct: Product = this._generator.byData(product);
-                this._products.push(createdProduct);
-                this._storageService.set(this._products);
+                this._items.push(createdProduct);
+                this._storageService.set(this._items);
                 resolve(createdProduct);
             }, 800);
         });
@@ -40,11 +38,11 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
                 if (!id) {
                     reject(NO_VALID_DATA);
                 }
-                for (let i = 0; i < this._products.length; i++) {
-                    const product: Product = this._products[i];
+                for (let i = 0; i < this._items.length; i++) {
+                    const product: Product = this._items[i];
                     if (product.barcode === Number(id)) {
-                        this._products.splice(i, 1);
-                        this._storageService.set(this._products);
+                        this._items.splice(i, 1);
+                        this._storageService.set(this._items);
                         resolve(true);
                     }
                 }
@@ -53,19 +51,21 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
         });
     }
 
-    read (id: string): Promise<Product> {
+    read (id: string): Promise<Product | null> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (!id) {
                     reject(NO_VALID_DATA);
                 }
-                for (let i = 0; i < this._products.length; i++) {
-                    const product: Product = this._products[i];
+                for (let i = 0; i < this._items.length; i++) {
+                    const product: Product = this._items[i];
                     if (product.barcode === Number(id)) {
                         resolve(product);
                     }
                 }
-                reject(NOT_FOUND);
+
+
+                resolve(null);
             }, 800);
         });
     }
@@ -76,15 +76,15 @@ export class ProductLocalService implements IProductService<Product, ProductCrea
                 if (!updateData) {
                     reject(NO_VALID_DATA);
                 }
-                for (let i = 0; i < this._products.length; i++) {
-                    const product: Product = this._products[i];
+                for (let i = 0; i < this._items.length; i++) {
+                    const product: Product = this._items[i];
                     if (product.barcode === updateData.barcode) {
-                        this._products[i] = {
+                        this._items[i] = {
                             ...product,
                             ...updateData,
                         };
-                        this._storageService.set(this._products);
-                        resolve(this._products[i]);
+                        this._storageService.set(this._items);
+                        resolve(this._items[i]);
                     }
                 }
                 reject(NOT_FOUND);

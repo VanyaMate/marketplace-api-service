@@ -1,13 +1,13 @@
-import { IUserMapper, IUserService } from './user.interface';
-import { CreateUserDto, PublicUser, UpdateUserDto, User } from './user.type';
+import { SingleService } from '../single.service';
+import { CreateUserDto, UpdateUserDto, User } from './user.type';
 import { IStorageService } from '../storage/storage.interface';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 
 
-export class UserLocalService implements IUserService<User, PublicUser, CreateUserDto, UpdateUserDto> {
+export class UserLocalService extends SingleService<User, CreateUserDto, UpdateUserDto> {
     constructor (
-        public readonly mapper: IUserMapper<User, PublicUser>,
-        private readonly _storageService: IStorageService<User>) {
+        _storageService: IStorageService<User>) {
+        super(_storageService);
     }
 
     create (createUserDto: CreateUserDto): Promise<User> {
@@ -17,9 +17,8 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this._storageService.get();
-                for (let i = 0; i < users.length; i++) {
-                    if (users[i].login === createUserDto.login) {
+                for (let i = 0; i < this._items.length; i++) {
+                    if (this._items[i].login === createUserDto.login) {
                         reject(NO_VALID_DATA);
                     }
                 }
@@ -28,8 +27,8 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     password: createUserDto.password,
                     avatar  : '',
                 };
-                users.push(user);
-                this._storageService.set(users);
+                this._items.push(user);
+                this._storageService.set(this._items);
 
                 resolve(user);
             }, 1000);
@@ -43,12 +42,11 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this._storageService.get();
-                for (let i = 0; i < users.length; i++) {
-                    const user: User = users[i];
+                for (let i = 0; i < this._items.length; i++) {
+                    const user: User = this._items[i];
                     if (user.login === login) {
-                        users.splice(i, 1);
-                        this._storageService.set(users);
+                        this._items.splice(i, 1);
+                        this._storageService.set(this._items);
                         resolve(true);
                     }
                 }
@@ -58,22 +56,22 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
         });
     }
 
-    read (login: string): Promise<User> {
+    read (login: string): Promise<User | null> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (!login) {
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this._storageService.get();
-                for (let i = 0; i < users.length; i++) {
-                    const user: User = users[i];
-                    if (user.login === login) {
-                        resolve(user);
-                    }
-                }
-
-                reject(NOT_FOUND);
+                this._separator
+                    .findFirst(
+                        this._items,
+                        (user) => user.login === login,
+                        {
+                            maxOperationsPerStep: 100,
+                        },
+                    )
+                    .then(resolve);
             }, 1000);
         });
     }
@@ -85,13 +83,12 @@ export class UserLocalService implements IUserService<User, PublicUser, CreateUs
                     reject(NO_VALID_DATA);
                 }
 
-                const users: User[] = this._storageService.get();
-                for (let i = 0; i < users.length; i++) {
-                    const user: User = users[i];
+                for (let i = 0; i < this._items.length; i++) {
+                    const user: User = this._items[i];
                     if (user.login === updateUser.login) {
-                        const newData = { ...user, ...updateUser };
-                        users[i]      = newData;
-                        this._storageService.set(users);
+                        const newData  = { ...user, ...updateUser };
+                        this._items[i] = newData;
+                        this._storageService.set(this._items);
                         resolve(newData);
                     }
                 }

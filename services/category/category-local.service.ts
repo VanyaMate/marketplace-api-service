@@ -1,10 +1,8 @@
-import Separator from '@vanyamate/separator';
-import { ISeparator } from '@vanyamate/separator/separator.interface';
 import { NO_VALID_DATA, NOT_FOUND } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
+import { SingleService } from '../single.service';
 import { IStorageService } from '../storage/storage.interface';
 import { StorageService } from '../storage/storage.service';
-import { ICategoryService } from './category.interface';
 import {
     Category,
     CreateCategoryDto,
@@ -12,12 +10,9 @@ import {
 } from './category.type';
 
 
-export class CategoryLocalService implements ICategoryService<Category, CreateCategoryDto, UpdateCategoryDto> {
-    private readonly _separator: ISeparator = new Separator();
-    private _categories: Category[]         = [];
-
-    constructor (private readonly _storageService: IStorageService<Category>) {
-        this._categories = this._storageService.get();
+export class CategoryLocalService extends SingleService<Category, CreateCategoryDto, UpdateCategoryDto> {
+    constructor (_storageService: IStorageService<Category>) {
+        super(_storageService);
     }
 
     public create (item: CreateCategoryDto): Promise<Category> {
@@ -25,7 +20,7 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
             setTimeout(() => {
                 this._separator
                     .findFirst<Category>(
-                        this._categories,
+                        this._items,
                         (category) => category === item,
                         { maxOperationsPerStep: 100 },
                     )
@@ -33,8 +28,8 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
                         reject(NO_VALID_DATA);
                     })
                     .catch(() => {
-                        this._categories.push(item);
-                        this._storageService.set(this._categories);
+                        this._items.push(item);
+                        this._storageService.set(this._items);
                         resolve(item);
                     });
             }, 960);
@@ -48,18 +43,18 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
                     reject(NO_VALID_DATA);
                 }
 
-                this._categories = await this._separator.filter(
-                    this._categories,
+                this._items = await this._separator.filter(
+                    this._items,
                     (category) => category !== id,
                     { maxOperationsPerStep: 100 },
                 );
-                this._storageService.set(this._categories);
+                this._storageService.set(this._items);
                 resolve(true);
             }, 800);
         });
     }
 
-    public read (id: string): Promise<Category> {
+    public read (id: string): Promise<Category | null> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 if (!id) {
@@ -68,12 +63,11 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
 
                 this._separator
                     .findFirst(
-                        this._categories,
+                        this._items,
                         (category) => category !== id,
                         { maxOperationsPerStep: 100 },
                     )
-                    .then(resolve)
-                    .catch(() => reject(NOT_FOUND));
+                    .then(resolve);
             }, 900);
         });
     }
@@ -86,7 +80,7 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
                 }
 
                 const categories: Category[] = await this._separator
-                    .map<Category, Category>(this._categories, (category) => {
+                    .map<Category, Category>(this._items, (category) => {
                         if (category === item.old) {
                             return item.new;
                         } else {
@@ -94,8 +88,8 @@ export class CategoryLocalService implements ICategoryService<Category, CreateCa
                         }
                     }, { maxOperationsPerStep: 100 });
 
-                this._categories = categories;
-                this._storageService.set(this._categories);
+                this._items = categories;
+                this._storageService.set(this._items);
             }, 900);
         });
     }
