@@ -57,7 +57,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                 this._storageService.set(this._items);
 
                 resolve(item);
-            }, this._options.create.timeout ?? this._options.options.timeout ?? 800);
+            }, this._options.create?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -78,7 +78,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                 }
 
                 resolve(false);
-            }, this._options.delete.timeout ?? this._options.options.timeout ?? 800);
+            }, this._options.delete?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -98,7 +98,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                         },
                     )
                     .then(resolve);
-            }, this._options.read.timeout ?? this._options.options.timeout ?? 800);
+            }, this._options.read?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -120,7 +120,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                 }
 
                 reject(NOT_FOUND);
-            }, this._options.update.timeout ?? this._options.options.timeout ?? 800);
+            }, this._options.update?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 }
