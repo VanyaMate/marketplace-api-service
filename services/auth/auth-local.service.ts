@@ -1,5 +1,5 @@
 import { IAuthService } from './auth.interface';
-import { IUserService } from '../user/user.interface';
+import { IUserMapper, IUserService } from '../user/user.interface';
 import {
     CreateUserDto,
     PublicUser,
@@ -16,7 +16,8 @@ import { StorageName } from '../../config/storage-names.config';
 
 export class AuthLocalService implements IAuthService<PublicUser> {
     constructor (
-        private readonly _userService: IUserService<User, PublicUser, CreateUserDto, UpdateUserDto>,
+        private readonly _userService: IUserService<User, CreateUserDto, UpdateUserDto>,
+        private readonly _userMapper: IUserMapper<User, PublicUser>,
         private readonly _storageService: IStorageService<string>,
     ) {
     }
@@ -26,7 +27,7 @@ export class AuthLocalService implements IAuthService<PublicUser> {
             setTimeout(async () => {
                 const user: User = await this._userService.read(login);
                 if (user.password === password) {
-                    const publicUser: PublicUser = this._userService.mapper.toPublic(user);
+                    const publicUser: PublicUser = this._userMapper.toPublic(user);
                     this._storageService.set([ publicUser.login ]);
                     resolve(publicUser);
                 } else {
@@ -57,7 +58,7 @@ export class AuthLocalService implements IAuthService<PublicUser> {
                     this._storageService.set([]);
                     reject();
                 }
-                const publicUser: PublicUser = this._userService.mapper.toPublic(user);
+                const publicUser: PublicUser = this._userMapper.toPublic(user);
                 resolve(publicUser);
             }, 500);
         });
@@ -73,7 +74,7 @@ export class AuthLocalService implements IAuthService<PublicUser> {
                     login,
                     password,
                 });
-                const publicUser: PublicUser = this._userService.mapper.toPublic(user);
+                const publicUser: PublicUser = this._userMapper.toPublic(user);
                 resolve(publicUser);
             }, 800);
         });
@@ -82,12 +83,12 @@ export class AuthLocalService implements IAuthService<PublicUser> {
 
 export default new AuthLocalService(
     new UserLocalService(
-        new UserMapper(),
         new StorageService(
             localStorage,
             StorageName.USERS,
         ),
     ),
+    new UserMapper(),
     new StorageService(
         localStorage,
         StorageName.AUTH,
