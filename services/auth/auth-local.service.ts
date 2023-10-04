@@ -81,18 +81,3 @@ export class AuthLocalService implements IAuthService<PublicUser> {
         });
     }
 }
-
-export default new AuthLocalService(
-    new UserLocalService(
-        new StorageService(
-            localStorage,
-            StorageName.USERS,
-        ),
-        new UserDataGenerator(),
-    ),
-    new UserMapper(),
-    new StorageService(
-        localStorage,
-        StorageName.AUTH,
-    ),
-);

@@ -19,12 +19,3 @@ export class ProductsLocalService extends MultiplyService<Product> {
         );
     }
 }
-
-export default new ProductsLocalService(
-    new StorageService(
-        localStorage,
-        StorageName.PRODUCTS,
-    ),
-    product_1,
-    product_2,
-);

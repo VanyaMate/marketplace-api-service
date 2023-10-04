@@ -1,14 +1,17 @@
-import { MultiplyResponse, SearchOptions } from './common.type';
+import {
+    MultiplyResponse, PK,
+    SearchOptions,
+} from './common.type';
 
 
 export interface IService<T, C, U> {
     create (item: C): Promise<T>;
 
-    read (id: string): Promise<T | null>;
+    read (pk: any): Promise<T | null>;
 
-    update (item: U): Promise<T>;
+    update (pk: any, item: U): Promise<T>;
 
-    delete (id: string): Promise<boolean>;
+    delete (pk: any): Promise<boolean>;
 }
 
 export interface IMultiplyService<T> {

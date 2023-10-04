@@ -34,8 +34,8 @@ export type Product = {
 }
 
 export type ProductCreateDto =
-    Partial<Omit<Product, 'barcode' | 'brand_name'>>
-    & Pick<Product, 'brand_name'>;
+    Partial<Omit<Product, 'brand_name'>>
+    & Pick<Product, 'barcode' | 'brand_name'>;
 
 export type ProductUpdateDto =
     Partial<Omit<Product, 'barcode'>>

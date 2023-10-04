@@ -27,11 +27,11 @@ export class CategoryDataGenerator implements IDataGenerator<Category, CreateCat
         return undefined;
     }
 
-    public subcategory (): Category["subcategory"] {
+    public title (): Category["title"] {
         return undefined;
     }
 
-    public title (): Category["title"] {
+    public subcategories (): Category["subcategories"] {
         return undefined;
     }
 
