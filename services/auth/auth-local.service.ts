@@ -1,4 +1,3 @@
-import { UserDataGenerator } from '../user/user.data-generator';
 import { IAuthService } from './auth.interface';
 import { IUserMapper, IUserService } from '../user/user.interface';
 import {
@@ -9,10 +8,6 @@ import {
 } from '../user/user.type';
 import { NO_VALID_DATA } from '../../config/errors.config';
 import { IStorageService } from '../storage/storage.interface';
-import { UserLocalService } from '../user/user-local.service';
-import { UserMapper } from '../user/user.mapper';
-import { StorageService } from '../storage/storage.service';
-import { StorageName } from '../../config/storage-names.config';
 
 
 export class AuthLocalService implements IAuthService<PublicUser> {

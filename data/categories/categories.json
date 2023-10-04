@@ -1,1 +1,1 @@
-["food", "beverages", "household"]
+[{"title":"food","description":"good food","image":"https://dummyimage.com/300x400/000/fff","parent":"","subcategories":[]},{"title":"beverages","description":"good food","image":"https://dummyimage.com/300x400/000/fff","parent":"","subcategories":[]},{"title":"household","description":"good food","image":"https://dummyimage.com/300x400/000/fff","parent":"","subcategories":[]}]

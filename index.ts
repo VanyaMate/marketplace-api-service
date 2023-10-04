@@ -47,7 +47,20 @@ import { IStorageService } from './services/storage/storage.interface';
 import { IService } from './services/service.interface';
 import { IAuthService } from './services/auth/auth.interface';
 import { NO_VALID_DATA, NOT_FOUND } from './config/errors.config';
-
+import {
+    CategoryDataGenerator
+} from './services/category/category.data-generator';
+import CategoriesLocalService
+    from './services/categories/categories-local.service';
+import {
+    CategoriesService
+} from './services/categories/categories-local.service';
+import {
+    CategoryLocalService
+} from './services/category/category-local.service';
+import { AuthLocalService } from './services/auth/auth-local.service';
+import categoriesLocalService
+    from './services/categories/categories-local.service';
 
 export {
     IAuthService,
