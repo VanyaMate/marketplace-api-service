@@ -1,0 +1,38 @@
+import { IDataGenerator } from '../data-generator.type';
+import { Category, CreateCategoryDto } from './category.type';
+
+
+export class CategoryDataGenerator implements IDataGenerator<Category, CreateCategoryDto> {
+    public byData (data: CreateCategoryDto): Category {
+        return undefined;
+    }
+
+    public clear (): Category {
+        return undefined;
+    }
+
+    public description (): Category["description"] {
+        return undefined;
+    }
+
+    public filled (data: CreateCategoryDto | undefined): Category {
+        return undefined;
+    }
+
+    public image (): Category["image"] {
+        return undefined;
+    }
+
+    public parent (): Category["parent"] {
+        return undefined;
+    }
+
+    public subcategory (): Category["subcategory"] {
+        return undefined;
+    }
+
+    public title (): Category["title"] {
+        return undefined;
+    }
+
+}

@@ -1,10 +1,10 @@
 import { SingleService } from '../single.service';
-import { IProductDataGenerator } from './product-data-generator.interface';
+import { IDataGenerator } from '../data-generator.type';
 import { Product, ProductCreateDto, ProductUpdateDto } from './product.type';
 import { IStorageService } from '../storage/storage.interface';
 import {
-    ProductDefaultDataGenerator,
-} from './product-default-data-generator';
+    ProductDataGenerator,
+} from './product.data-generator';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
 import { StorageService } from '../storage/storage.service';
@@ -12,10 +12,13 @@ import { StorageService } from '../storage/storage.service';
 
 export class ProductLocalService extends SingleService<Product, ProductCreateDto, ProductUpdateDto> {
     constructor (
-        private readonly _generator: IProductDataGenerator<Product, ProductCreateDto>,
-        _storageService: IStorageService<Product>,
+        storageService: IStorageService<Product>,
+        generator: IDataGenerator<Product, ProductCreateDto>,
     ) {
-        super(_storageService);
+        super(
+            storageService,
+            generator,
+        );
     }
 
     create (product: ProductCreateDto): Promise<Product> {
@@ -24,7 +27,7 @@ export class ProductLocalService extends SingleService<Product, ProductCreateDto
                 if (!product) {
                     reject(NO_VALID_DATA);
                 }
-                const createdProduct: Product = this._generator.byData(product);
+                const createdProduct: Product = this._dataGenerator.byData(product);
                 this._items.push(createdProduct);
                 this._storageService.set(this._items);
                 resolve(createdProduct);
@@ -94,9 +97,9 @@ export class ProductLocalService extends SingleService<Product, ProductCreateDto
 }
 
 export default new ProductLocalService(
-    new ProductDefaultDataGenerator(),
     new StorageService(
         localStorage,
         StorageName.PRODUCTS,
     ),
+    new ProductDataGenerator(),
 );

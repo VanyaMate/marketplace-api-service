@@ -1,3 +1,4 @@
+import { UserDataGenerator } from '../user/user.data-generator';
 import { IAuthService } from './auth.interface';
 import { IUserMapper, IUserService } from '../user/user.interface';
 import {
@@ -87,6 +88,7 @@ export default new AuthLocalService(
             localStorage,
             StorageName.USERS,
         ),
+        new UserDataGenerator(),
     ),
     new UserMapper(),
     new StorageService(

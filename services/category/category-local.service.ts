@@ -1,8 +1,10 @@
-import { NO_VALID_DATA, NOT_FOUND } from '../../config/errors.config';
+import { NO_VALID_DATA } from '../../config/errors.config';
 import { StorageName } from '../../config/storage-names.config';
+import { IDataGenerator } from '../data-generator.type';
 import { SingleService } from '../single.service';
 import { IStorageService } from '../storage/storage.interface';
 import { StorageService } from '../storage/storage.service';
+import { CategoryDataGenerator } from './category.data-generator';
 import {
     Category,
     CreateCategoryDto,
@@ -11,41 +13,45 @@ import {
 
 
 export class CategoryLocalService extends SingleService<Category, CreateCategoryDto, UpdateCategoryDto> {
-    constructor (_storageService: IStorageService<Category>) {
-        super(_storageService);
+    constructor (
+        storageService: IStorageService<Category>,
+        generator: IDataGenerator<Category, CreateCategoryDto>,
+    ) {
+        super(storageService, generator);
     }
 
-    public create (item: CreateCategoryDto): Promise<Category> {
+    public create (data: CreateCategoryDto): Promise<Category> {
         return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                this._separator
+            setTimeout(async () => {
+                const category: Category | null = await this._separator
                     .findFirst<Category>(
                         this._items,
-                        (category) => category === item,
+                        (category) => category.title === data.title,
                         { maxOperationsPerStep: 100 },
-                    )
-                    .then(() => {
-                        reject(NO_VALID_DATA);
-                    })
-                    .catch(() => {
-                        this._items.push(item);
-                        this._storageService.set(this._items);
-                        resolve(item);
-                    });
+                    );
+
+                if (category) {
+                    reject(NO_VALID_DATA);
+                } else {
+                    const category: Category = this._dataGenerator.byData(data);
+                    this._items.push(category);
+                    this._storageService.set(this._items);
+                    resolve(category);
+                }
             }, 960);
         });
     }
 
-    public delete (id: string): Promise<boolean> {
+    public delete (title: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                if (!id) {
+                if (!title) {
                     reject(NO_VALID_DATA);
                 }
 
                 this._items = await this._separator.filter(
                     this._items,
-                    (category) => category !== id,
+                    (category) => category.title !== title,
                     { maxOperationsPerStep: 100 },
                 );
                 this._storageService.set(this._items);
@@ -54,17 +60,17 @@ export class CategoryLocalService extends SingleService<Category, CreateCategory
         });
     }
 
-    public read (id: string): Promise<Category | null> {
+    public read (title: string): Promise<Category | null> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                if (!id) {
+                if (!title) {
                     reject(NO_VALID_DATA);
                 }
 
                 this._separator
                     .findFirst(
                         this._items,
-                        (category) => category !== id,
+                        (category) => category.title !== title,
                         { maxOperationsPerStep: 100 },
                     )
                     .then(resolve);
@@ -81,8 +87,8 @@ export class CategoryLocalService extends SingleService<Category, CreateCategory
 
                 const categories: Category[] = await this._separator
                     .map<Category, Category>(this._items, (category) => {
-                        if (category === item.old) {
-                            return item.new;
+                        if (category.title === item.old.title) {
+                            return { ...category, ...item.new };
                         } else {
                             return category;
                         }
@@ -100,4 +106,5 @@ export default new CategoryLocalService(
         localStorage,
         StorageName.CATEGORIES,
     ),
+    new CategoryDataGenerator(),
 );

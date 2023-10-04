@@ -1,85 +1,52 @@
-import { IProductDataGenerator } from './product-data-generator.interface';
+import { IDataGenerator } from '../data-generator.type';
 import { Product, ProductCreateDto } from './product.type';
 
 
-export class ProductDefaultDataGenerator implements IProductDataGenerator<Product, ProductCreateDto> {
+export class ProductDataGenerator implements IDataGenerator<Product, ProductCreateDto> {
+    private readonly clearProduct: Product = {
+        product_name     : '',
+        brand            : '',
+        brand_name       : '',
+        category         : '',
+        price            : 0,
+        available        : false,
+        quantity         : 0,
+        description      : '',
+        weight           : 0,
+        expiration_date  : this.expiration_date(),
+        manufacturer     : '',
+        country_of_origin: '',
+        barcode          : this.barcode(),
+        nutritional_facts: '',
+        allergens        : '',
+        ingredients      : '',
+        net_weight       : 0,
+        serving_size     : 0,
+        calories         : 0,
+        fat              : 0,
+        carbohydrates    : 0,
+        protein          : 0,
+        sugar            : 0,
+        fiber            : 0,
+        vitamin_a        : 0,
+        vitamin_c        : 0,
+        calcium          : 0,
+        iron             : 0,
+        image_url        : '',
+        images           : [],
+        reviews          : 0,
+        rating           : 0,
+    };
+
     byData (product: ProductCreateDto): Product {
         return {
-            ...{
-                product_name     : '',
-                brand            : '',
-                brand_name       : '',
-                category         : '',
-                price            : 0,
-                available        : false,
-                quantity         : 0,
-                description      : '',
-                weight           : 0,
-                expiration_date  : this.expiration_date(),
-                manufacturer     : '',
-                country_of_origin: '',
-                barcode          : this.barcode(),
-                nutritional_facts: '',
-                allergens        : '',
-                ingredients      : '',
-                net_weight       : 0,
-                serving_size     : 0,
-                calories         : 0,
-                fat              : 0,
-                carbohydrates    : 0,
-                protein          : 0,
-                sugar            : 0,
-                fiber            : 0,
-                vitamin_a        : 0,
-                vitamin_c        : 0,
-                calcium          : 0,
-                iron             : 0,
-                image_url        : '',
-                images           : [],
-                reviews          : 0,
-                rating           : 0,
-            },
+            ...this.clearProduct,
             ...product,
         };
     }
 
     public clear (): Product {
-        return {
-            ...{
-                product_name     : '',
-                brand            : '',
-                brand_name       : '',
-                category         : '',
-                price            : 0,
-                available        : false,
-                quantity         : 0,
-                description      : '',
-                weight           : 0,
-                expiration_date  : this.expiration_date(),
-                manufacturer     : '',
-                country_of_origin: '',
-                barcode          : this.barcode(),
-                nutritional_facts: '',
-                allergens        : '',
-                ingredients      : '',
-                net_weight       : 0,
-                serving_size     : 0,
-                calories         : 0,
-                fat              : 0,
-                carbohydrates    : 0,
-                protein          : 0,
-                sugar            : 0,
-                fiber            : 0,
-                vitamin_a        : 0,
-                vitamin_c        : 0,
-                calcium          : 0,
-                iron             : 0,
-                image_url        : '',
-                images           : [],
-                reviews          : 0,
-                rating           : 0,
-            },
-        };
+        return { ...this.clearProduct };
     }
 
     public filled (data: ProductCreateDto | undefined): Product {

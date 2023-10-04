@@ -1,4 +1,4 @@
-export type IProductDataGenerator<T, C> = {
+export type IDataGenerator<T, C> = {
     [K in keyof T]: () => T[K];
 } & {
     byData: (data: C) => T;

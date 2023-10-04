@@ -1,4 +1,5 @@
 import { SingleService } from '../single.service';
+import { IDataGenerator } from '../data-generator.type';
 import { CreateUserDto, UpdateUserDto, User } from './user.type';
 import { IStorageService } from '../storage/storage.interface';
 import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
@@ -6,8 +7,13 @@ import { NOT_FOUND, NO_VALID_DATA } from '../../config/errors.config';
 
 export class UserLocalService extends SingleService<User, CreateUserDto, UpdateUserDto> {
     constructor (
-        _storageService: IStorageService<User>) {
-        super(_storageService);
+        storageService: IStorageService<User>,
+        generator: IDataGenerator<User, CreateUserDto>,
+    ) {
+        super(
+            storageService,
+            generator,
+        );
     }
 
     create (createUserDto: CreateUserDto): Promise<User> {
@@ -22,11 +28,7 @@ export class UserLocalService extends SingleService<User, CreateUserDto, UpdateU
                         reject(NO_VALID_DATA);
                     }
                 }
-                const user: User = {
-                    login   : createUserDto.login,
-                    password: createUserDto.password,
-                    avatar  : '',
-                };
+                const user: User = this._dataGenerator.byData(createUserDto);
                 this._items.push(user);
                 this._storageService.set(this._items);
 
