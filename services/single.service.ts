@@ -37,6 +37,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
             setTimeout(async () => {
                 if (!createDto) {
                     reject(NO_VALID_DATA);
+                    return;
                 }
 
                 const foundItem: T | null = await this._separator
@@ -50,6 +51,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
 
                 if (foundItem) {
                     reject(NO_VALID_DATA);
+                    return;
                 }
 
                 const item: T = this._dataGenerator.byData(createDto);
@@ -66,6 +68,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
             setTimeout(() => {
                 if (!pk) {
                     reject(NO_VALID_DATA);
+                    return;
                 }
 
                 for (let i = 0; i < this._items.length; i++) {
@@ -74,6 +77,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                         this._items.splice(i, 1);
                         this._storageService.set(this._items);
                         resolve(true);
+                        return;
                     }
                 }
 
@@ -87,6 +91,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
             setTimeout(() => {
                 if (!pk) {
                     reject(NO_VALID_DATA);
+                    return;
                 }
 
                 this._separator
@@ -107,6 +112,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
             setTimeout(() => {
                 if (!updateDto || !pk) {
                     reject(NO_VALID_DATA);
+                    return;
                 }
 
                 for (let i = 0; i < this._items.length; i++) {
@@ -116,6 +122,7 @@ export class SingleService<T, C, U> implements IService<T, C, U> {
                         this._items[i] = newData;
                         this._storageService.set(this._items);
                         resolve(newData);
+                        return;
                     }
                 }
 
