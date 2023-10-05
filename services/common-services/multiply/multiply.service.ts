@@ -36,7 +36,11 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                 const filtered: T[] = await this._separator.filter(
                     this.items,
                     objectFilter(filters),
-                    { maxOperationsPerStep: 100 },
+                    {
+                        maxOperationsPerStep: this._options.findMany?.maxOperationsPerStep
+                            ?? this._options.options.maxOperationsPerStep
+                            ?? 100,
+                    },
                 );
 
                 resolve(
@@ -45,7 +49,7 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                         this._getSorted(filtered, options),
                     ),
                 );
-            }, 1200);
+            }, this._options.findMany?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -59,7 +63,11 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                 const filtered: T[] = await this._separator.filter(
                     this.items,
                     filter,
-                    { maxOperationsPerStep: 100 },
+                    {
+                        maxOperationsPerStep: this._options.findManyByFilter?.maxOperationsPerStep
+                            ?? this._options.options.maxOperationsPerStep
+                            ?? 100,
+                    },
                 );
 
                 resolve(
@@ -68,7 +76,7 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                         this._getSorted(filtered, options),
                     ),
                 );
-            }, 1200);
+            }, this._options.findManyByFilter?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -83,10 +91,14 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                     .findFirst<T>(
                         this.items,
                         (item: T) => this._options.options.findOneFilter(item, id),
-                        { maxOperationsPerStep: 100 },
+                        {
+                            maxOperationsPerStep: this._options.findMany?.maxOperationsPerStep
+                                ?? this._options.options.maxOperationsPerStep
+                                ?? 100,
+                        },
                     )
                     .then(resolve);
-            }, 1200);
+            }, this._options.findOne?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
