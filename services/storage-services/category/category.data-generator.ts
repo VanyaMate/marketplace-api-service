@@ -3,36 +3,56 @@ import { Category, CreateCategoryDto } from './category.type';
 
 
 export class CategoryDataGenerator implements IDataGenerator<Category, CreateCategoryDto> {
+    private readonly _clearCategory: Category = {
+        title        : '',
+        description  : '',
+        parent       : '',
+        image        : '',
+        subcategories: [],
+    };
+
     public byData (data: CreateCategoryDto): Category {
-        return undefined;
+        return {
+            ...this._clearCategory,
+            ...data,
+        };
     }
 
     public clear (): Category {
-        return undefined;
+        return { ...this._clearCategory };
     }
 
-    public description (): Category["description"] {
-        return undefined;
+    public description (): Category['description'] {
+        return '';
     }
 
     public filled (data: CreateCategoryDto | undefined): Category {
-        return undefined;
+        return {
+            ...{
+                title        : this.title(),
+                description  : this.description(),
+                image        : this.image(),
+                parent       : this.parent(),
+                subcategories: this.subcategories(),
+            },
+            ...data,
+        };
     }
 
-    public image (): Category["image"] {
-        return undefined;
+    public image (): Category['image'] {
+        return '';
     }
 
-    public parent (): Category["parent"] {
-        return undefined;
+    public parent (): Category['parent'] {
+        return '';
     }
 
-    public title (): Category["title"] {
-        return undefined;
+    public title (): Category['title'] {
+        return '';
     }
 
-    public subcategories (): Category["subcategories"] {
-        return undefined;
+    public subcategories (): Category['subcategories'] {
+        return [];
     }
 
 }

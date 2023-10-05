@@ -129,13 +129,13 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
         }
     }
 
-    protected _getMultiplyResponse (options: SearchOptions<T>, products: T[]): MultiplyResponse<T> {
+    protected _getMultiplyResponse (options: SearchOptions<T> = this._defaultSearchOptions, products: T[]): MultiplyResponse<T> {
         const fullOptions: SearchOptions<T> = {
             ...this._defaultSearchOptions,
             ...options,
         };
         const count: number                 = products.length;
-        const list: T[]                     = products.slice(fullOptions.offset, fullOptions.offset + fullOptions.limit);
+        const list: T[]                     = products.slice(fullOptions.offset, fullOptions.offset! + fullOptions.limit!);
         return {
             options: fullOptions,
             count  : count,

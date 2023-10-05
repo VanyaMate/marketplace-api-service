@@ -99,122 +99,122 @@ export class ProductDataGenerator implements IDataGenerator<Product, ProductCrea
     }
 
     public allergens (): Product['allergens'] {
-        return undefined;
+        return '';
     }
 
     public available (): Product['available'] {
-        return undefined;
+        return false;
     }
 
     public brand (): Product['brand'] {
-        return undefined;
+        return '';
     }
 
     public brand_name (): Product['brand_name'] {
-        return undefined;
+        return '';
     }
 
     public calcium (): Product['calcium'] {
-        return undefined;
+        return 0;
     }
 
     public calories (): Product['calories'] {
-        return undefined;
+        return 0;
     }
 
     public carbohydrates (): Product['carbohydrates'] {
-        return undefined;
+        return 0;
     }
 
     public category (): Product['category'] {
-        return undefined;
+        return '';
     }
 
     public country_of_origin (): Product['country_of_origin'] {
-        return undefined;
+        return '';
     }
 
     public description (): Product['description'] {
-        return undefined;
+        return '';
     }
 
     public fat (): Product['fat'] {
-        return undefined;
+        return 0;
     }
 
     public fiber (): Product['fiber'] {
-        return undefined;
+        return 0;
     }
 
     public image_url (): Product['image_url'] {
-        return undefined;
+        return '';
     }
 
     public images (): Product['images'] {
-        return undefined;
+        return [];
     }
 
     public ingredients (): Product['ingredients'] {
-        return undefined;
+        return '';
     }
 
     public iron (): Product['iron'] {
-        return undefined;
+        return 0;
     }
 
     public manufacturer (): Product['manufacturer'] {
-        return undefined;
+        return '';
     }
 
     public net_weight (): Product['net_weight'] {
-        return undefined;
+        return 0;
     }
 
     public nutritional_facts (): Product['nutritional_facts'] {
-        return undefined;
+        return 'undefined';
     }
 
     public price (): Product['price'] {
-        return undefined;
+        return 0;
     }
 
     public product_name (): Product['product_name'] {
-        return undefined;
+        return '';
     }
 
     public protein (): Product['protein'] {
-        return undefined;
+        return 0;
     }
 
     public quantity (): Product['quantity'] {
-        return undefined;
+        return 0;
     }
 
     public rating (): Product['rating'] {
-        return undefined;
+        return 0;
     }
 
     public reviews (): Product['reviews'] {
-        return undefined;
+        return 0;
     }
 
     public serving_size (): Product['serving_size'] {
-        return undefined;
+        return 0;
     }
 
     public sugar (): Product['sugar'] {
-        return undefined;
+        return 0;
     }
 
     public vitamin_a (): Product['vitamin_a'] {
-        return undefined;
+        return 0;
     }
 
     public vitamin_c (): Product['vitamin_c'] {
-        return undefined;
+        return 0;
     }
 
     public weight (): Product['weight'] {
-        return undefined;
+        return 0;
     }
 }
