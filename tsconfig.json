@@ -22,10 +22,17 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "types": [
+            "services"
+        ]
     },
     "include": [
-        "src"
+        "src",
+        "config",
+        "data",
+        "services",
+        "utils"
     ],
     "references": [
         {

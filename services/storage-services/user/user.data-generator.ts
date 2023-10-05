@@ -10,7 +10,7 @@ export class UserDataGenerator implements IDataGenerator<User, CreateUserDto> {
     };
 
     public avatar (): User['avatar'] {
-        return undefined;
+        return '';
     }
 
     public byData (data: CreateUserDto): User {
@@ -26,18 +26,21 @@ export class UserDataGenerator implements IDataGenerator<User, CreateUserDto> {
 
     public filled (data: CreateUserDto | undefined): User {
         return {
-            login   : this.login(),
-            password: this.password(),
-            avatar  : this.avatar(),
+            ...{
+                login   : this.login(),
+                password: this.password(),
+                avatar  : this.avatar(),
+            },
+            ...data,
         };
     }
 
     public login (): User['login'] {
-        return undefined;
+        return '';
     }
 
     public password (): User['password'] {
-        return undefined;
+        return '';
     }
 
 }

@@ -1,5 +1,5 @@
 import {
-    IStorageService
+    IStorageService,
 } from '../../common-services/storage/storage-service.interface';
 import { IAuthService } from './auth.interface';
 import { IUserMapper, IUserService } from '../user/user.interface';
@@ -23,8 +23,8 @@ export class AuthStorageService implements IAuthService<PublicUser> {
     login (login: string, password: string): Promise<PublicUser> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                const user: User = await this._userService.read(login);
-                if (user.password === password) {
+                const user: User | null = await this._userService.read(login);
+                if (user && user.password === password) {
                     const publicUser: PublicUser = this._userMapper.toPublic(user);
                     this._storageService.set([ publicUser.login ]);
                     resolve(publicUser);
@@ -50,11 +50,13 @@ export class AuthStorageService implements IAuthService<PublicUser> {
                 const [ userLogin ]: string[] = this._storageService.get();
                 if (!userLogin) {
                     reject();
+                    return;
                 }
-                const user: User = await this._userService.read(userLogin);
+                const user: User | null = await this._userService.read(userLogin);
                 if (!user) {
                     this._storageService.set([]);
                     reject();
+                    return;
                 }
                 const publicUser: PublicUser = this._userMapper.toPublic(user);
                 resolve(publicUser);
