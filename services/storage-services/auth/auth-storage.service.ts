@@ -3,35 +3,32 @@ import {
 } from '../../common-services/storage/storage-service.interface';
 import { IAuthService } from './auth.interface';
 import { IUserMapper, IUserService } from '../user/user.interface';
-import {
-    CreateUserDto,
-    PublicUser,
-    UpdateUserDto,
-    User,
-} from '../user/user.type';
 import { NO_VALID_DATA } from '../../../config/errors.config';
+import { AuthStorageServiceOptions } from './auth.type.ts';
 
 
-export class AuthStorageService implements IAuthService<PublicUser> {
+export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
     constructor (
-        private readonly _userService: IUserService<User, CreateUserDto, UpdateUserDto>,
-        private readonly _userMapper: IUserMapper<User, PublicUser>,
+        private readonly _userService: IUserService<T, C, U>,
+        private readonly _userMapper: IUserMapper<T, P>,
         private readonly _storageService: IStorageService<string>,
+        private readonly _options: AuthStorageServiceOptions<T, P, C>,
     ) {
     }
 
-    login (login: string, password: string): Promise<PublicUser> {
+    login (login: string, password: string): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                const user: User | null = await this._userService.read(login);
-                if (user && user.password === password) {
-                    const publicUser: PublicUser = this._userMapper.toPublic(user);
-                    this._storageService.set([ publicUser.login ]);
+                const user: T | null = await this._userService.read(login);
+                if (user && user[this._options.options.passwordKeyName] === password) {
+                    const publicUser: P = this._userMapper.toPublic(user);
+                    const login: string = (publicUser[this._options.options.loginKeyName] as any).toString();
+                    this._storageService.set([ login ]);
                     resolve(publicUser);
                 } else {
                     reject(NO_VALID_DATA);
                 }
-            }, 800);
+            }, this._options.login?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
@@ -40,11 +37,11 @@ export class AuthStorageService implements IAuthService<PublicUser> {
             setTimeout(() => {
                 this._storageService.set([]);
                 resolve();
-            }, 1000);
+            }, this._options.logout?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
-    refresh (): Promise<PublicUser> {
+    refresh (): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 const [ userLogin ]: string[] = this._storageService.get();
@@ -52,31 +49,31 @@ export class AuthStorageService implements IAuthService<PublicUser> {
                     reject();
                     return;
                 }
-                const user: User | null = await this._userService.read(userLogin);
+                const user: T | null = await this._userService.read(userLogin);
                 if (!user) {
                     this._storageService.set([]);
                     reject();
                     return;
                 }
-                const publicUser: PublicUser = this._userMapper.toPublic(user);
+                const publicUser: P = this._userMapper.toPublic(user);
                 resolve(publicUser);
-            }, 500);
+            }, this._options.refresh?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 
-    registration (login: string, password: string): Promise<PublicUser> {
+    registration (login: string, password: string): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 if (!login || !password) {
                     reject(NO_VALID_DATA);
                 }
-                const user: User             = await this._userService.create({
-                    login,
-                    password,
-                });
-                const publicUser: PublicUser = this._userMapper.toPublic(user);
+                const user: T       = await this._userService.create({
+                    [this._options.options.loginKeyName]   : login,
+                    [this._options.options.passwordKeyName]: password,
+                } as C);
+                const publicUser: P = this._userMapper.toPublic(user);
                 resolve(publicUser);
-            }, 800);
+            }, this._options.registration?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
 }
