@@ -1,28 +1,20 @@
 import Separator from '@vanyamate/separator';
 import { ISeparator } from '@vanyamate/separator/separator.interface';
-import { NO_VALID_DATA, NOT_FOUND } from '../config/errors.config';
+import { NO_VALID_DATA, NOT_FOUND } from '../../../config/errors.config';
 import {
-    IntersectionPropertiesOf2, PK,
-} from './common.type';
-import { IService } from './service.interface';
-import { IStorageService } from './storage/storage.interface';
-import { IDataGenerator } from './data-generator.type';
+    PK,
+} from '../common.type';
+import {
+    ISingleService,
+    SingleServiceOptions,
+} from './single-service.interface';
+import { IStorageService } from '../storage/storage-service.interface';
+import { IDataGenerator } from '../data-generator.interface';
 
 
-export type SingleServiceOptions<T, C, U> = {
-    [K in keyof IService<T, C, U>]?: {
-        timeout: number,
-    }
-} & {
-    options: {
-        timeout?: number,
-        pk: IntersectionPropertiesOf2<T, C>,
-    }
-}
-
-export class SingleService<T, C, U> implements IService<T, C, U> {
-    protected _items: T[]            = [];
-    protected _separator: ISeparator = new Separator();
+export class SingleService<T, C, U> implements ISingleService<T, C, U> {
+    protected readonly _separator: ISeparator = new Separator();
+    protected _items: T[]                     = [];
 
     protected constructor (
         protected readonly _storageService: IStorageService<T>,

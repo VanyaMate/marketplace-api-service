@@ -1,3 +1,6 @@
+import {
+    IStorageService
+} from '../../common-services/storage/storage-service.interface';
 import { IAuthService } from './auth.interface';
 import { IUserMapper, IUserService } from '../user/user.interface';
 import {
@@ -6,8 +9,7 @@ import {
     UpdateUserDto,
     User,
 } from '../user/user.type';
-import { NO_VALID_DATA } from '../../config/errors.config';
-import { IStorageService } from '../storage/storage.interface';
+import { NO_VALID_DATA } from '../../../config/errors.config';
 
 
 export class AuthLocalService implements IAuthService<PublicUser> {

@@ -1,4 +1,4 @@
-import { IDataGenerator } from '../data-generator.type';
+import { IDataGenerator } from '../../common-services/data-generator.interface';
 import { Product, ProductCreateDto } from './product.type';
 
 

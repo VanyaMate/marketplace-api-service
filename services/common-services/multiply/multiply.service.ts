@@ -1,11 +1,15 @@
 import Separator from '@vanyamate/separator';
 import { ISeparator } from '@vanyamate/separator/separator.interface';
-import { NO_VALID_DATA, NOT_FOUND } from '../config/errors.config';
-import { objectFilter } from '../utils/object-filter';
-import { Category } from './category/category.type';
-import { MultiplyResponse, SearchOptions, SortOption } from './common.type';
-import { IMultiplyService } from './service.interface';
-import { IStorageService } from './storage/storage.interface';
+import { NO_VALID_DATA } from '../../../config/errors.config';
+import { objectFilter } from '../../../utils/object-filter';
+import {
+    MultiplyResponse,
+    SearchOptions,
+    SortOption,
+} from '../common.type';
+import { IStorageService } from '../storage/storage-service.interface';
+import { IMultiplyService } from './multiply-service.interface';
+import { MultiplyServiceOptions } from './multiply-service.type';
 
 
 export abstract class MultiplyService<T> implements IMultiplyService<T> {
@@ -14,19 +18,16 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
         offset: 0,
         sort  : [],
     };
-    private readonly _items: T[]                             = [];
     protected readonly _separator: ISeparator                = new Separator();
 
     protected constructor (
         private readonly _storageService: IStorageService<T>,
-        items: T[][],
-        private readonly _findOneFilter: (item: T, id: string) => boolean,
+        private readonly _options: MultiplyServiceOptions<T>,
     ) {
-        this._items = items.flat(1);
     }
 
     get items (): T[] {
-        return [ ...this._items, ...this._storageService.get() ];
+        return [ ...(this._options.options.items ?? []), ...this._storageService.get() ];
     }
 
     findMany (filters: Partial<T>, options: SearchOptions<T> = {}): Promise<MultiplyResponse<T>> {
@@ -81,7 +82,7 @@ export abstract class MultiplyService<T> implements IMultiplyService<T> {
                 this._separator
                     .findFirst<T>(
                         this.items,
-                        (item: T) => this._findOneFilter(item, id),
+                        (item: T) => this._options.options.findOneFilter(item, id),
                         { maxOperationsPerStep: 100 },
                     )
                     .then(resolve);

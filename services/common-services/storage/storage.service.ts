@@ -1,4 +1,4 @@
-import { IStorageService } from './storage.interface';
+import { IStorageService } from './storage-service.interface';
 
 
 export class StorageService<T> implements IStorageService<T> {
