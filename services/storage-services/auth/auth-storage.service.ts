@@ -12,7 +12,7 @@ import {
 import { NO_VALID_DATA } from '../../../config/errors.config';
 
 
-export class AuthLocalService implements IAuthService<PublicUser> {
+export class AuthStorageService implements IAuthService<PublicUser> {
     constructor (
         private readonly _userService: IUserService<User, CreateUserDto, UpdateUserDto>,
         private readonly _userMapper: IUserMapper<User, PublicUser>,
