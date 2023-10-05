@@ -4,7 +4,7 @@ export const objectFilter = function <T> (filters: Partial<T>): (item: T) => boo
 
         Object.keys(filters).forEach((key: string) => {
             if (typeof item[key] === 'string') {
-                if (!item[key].toString().includes(filters[key.toString()])) {
+                if (!item[key].toString().match(new RegExp(filters[key.toString()], 'i'))) {
                     approach = false;
                     return;
                 }
