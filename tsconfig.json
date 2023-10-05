@@ -24,7 +24,11 @@
         "noFallthroughCasesInSwitch": true,
         "esModuleInterop": true,
         "types": [
-            "services"
+            "src",
+            "config",
+            "data",
+            "services",
+            "utils"
         ]
     },
     "include": [
@@ -32,7 +36,8 @@
         "config",
         "data",
         "services",
-        "utils"
+        "utils",
+        "data/**/*.json"
     ],
     "references": [
         {
