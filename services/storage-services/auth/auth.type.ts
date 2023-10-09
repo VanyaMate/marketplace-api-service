@@ -1,17 +1,17 @@
 import {
-    IntersectionPropertiesOf3,
+    IntersectionPropertiesOf2,
 } from '../../common-services/common.type.ts';
 import { IAuthService } from './auth.interface.ts';
 
 
-export type AuthStorageServiceOptions<T, P, C> = {
+export type AuthStorageServiceOptions<T, C> = {
     [K in keyof IAuthService<T>]?: {
         timeout: number,
     }
 } & {
     options: {
         timeout?: number,
-        loginKeyName: IntersectionPropertiesOf3<T, P, C>;
-        passwordKeyName: IntersectionPropertiesOf3<T, P, C>;
+        loginKeyName: IntersectionPropertiesOf2<T, C>;
+        passwordKeyName: IntersectionPropertiesOf2<T, C>;
     }
 }

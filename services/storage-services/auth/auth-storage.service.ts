@@ -12,7 +12,7 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
         private readonly _userService: IUserService<T, C, U>,
         private readonly _userMapper: IUserMapper<T, P>,
         private readonly _storageService: IStorageService<string>,
-        private readonly _options: AuthStorageServiceOptions<T, P, C>,
+        private readonly _options: AuthStorageServiceOptions<T, C>,
     ) {
     }
 
@@ -22,7 +22,6 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
                 const user: T | null = await this._userService.read(login);
                 if (user && user[this._options.options.passwordKeyName] === password) {
                     const publicUser: P = this._userMapper.toPublic(user);
-                    const login: string = (publicUser[this._options.options.loginKeyName] as any).toString();
                     this._storageService.set([ login ]);
                     resolve(publicUser);
                 } else {
