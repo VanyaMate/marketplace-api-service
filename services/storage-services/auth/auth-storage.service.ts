@@ -66,12 +66,16 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
                 if (!login || !password) {
                     reject(NO_VALID_DATA);
                 }
-                const user: T       = await this._userService.create({
-                    [this._options.options.loginKeyName]   : login,
-                    [this._options.options.passwordKeyName]: password,
-                } as C);
-                const publicUser: P = this._userMapper.toPublic(user);
-                resolve(publicUser);
+                try {
+                    const user: T       = await this._userService.create({
+                        [this._options.options.loginKeyName]   : login,
+                        [this._options.options.passwordKeyName]: password,
+                    } as C);
+                    const publicUser: P = this._userMapper.toPublic(user);
+                    resolve(publicUser);
+                } catch (e) {
+                    reject(e);
+                }
             }, this._options.registration?.timeout ?? this._options.options.timeout ?? 800);
         });
     }
