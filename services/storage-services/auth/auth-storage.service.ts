@@ -11,18 +11,19 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
     constructor (
         private readonly _userService: IUserService<T, C, U>,
         private readonly _userMapper: IUserMapper<T, P>,
-        private readonly _storageService: IStorageService<string>,
+        private readonly _rememberStorageService: IStorageService<string>,
+        private readonly _tempStorageService: IStorageService<string>,
         private readonly _options: AuthStorageServiceOptions<T, C>,
     ) {
     }
 
-    login (login: string, password: string): Promise<P> {
+    login (login: string, password: string, remember = false): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 const user: T | null = await this._userService.read(login);
                 if (user && user[this._options.options.passwordKeyName] === password) {
                     const publicUser: P = this._userMapper.toPublic(user);
-                    this._storageService.set([ login ]);
+                    this._saveLogin(login, remember);
                     resolve(publicUser);
                 } else {
                     reject(NO_VALID_DATA);
@@ -34,7 +35,7 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
     logout (): Promise<void> {
         return new Promise((resolve) => {
             setTimeout(() => {
-                this._storageService.set([]);
+                this._logout();
                 resolve();
             }, this._options.logout?.timeout ?? this._options.options.timeout ?? 800);
         });
@@ -43,14 +44,15 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
     refresh (): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
-                const [ userLogin ]: string[] = this._storageService.get();
-                if (!userLogin) {
+                const [ userRememberLogin ]: string[] = this._rememberStorageService.get();
+                const [ userTempLogin ]: string[]     = this._tempStorageService.get();
+                if (!userRememberLogin && !userTempLogin) {
                     reject();
                     return;
                 }
-                const user: T | null = await this._userService.read(userLogin);
+                const user: T | null = await this._userService.read(userRememberLogin ?? userTempLogin);
                 if (!user) {
-                    this._storageService.set([]);
+                    this._logout();
                     reject();
                     return;
                 }
@@ -60,7 +62,7 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
         });
     }
 
-    registration (login: string, password: string): Promise<P> {
+    registration (login: string, password: string, remember = false): Promise<P> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 if (!login || !password) {
@@ -72,11 +74,25 @@ export class AuthStorageService<T, P, C, U> implements IAuthService<P> {
                         [this._options.options.passwordKeyName]: password,
                     } as C);
                     const publicUser: P = this._userMapper.toPublic(user);
+                    this._saveLogin(login, remember);
                     resolve(publicUser);
                 } catch (e) {
                     reject(e);
                 }
             }, this._options.registration?.timeout ?? this._options.options.timeout ?? 800);
         });
+    }
+
+    private _logout (): void {
+        this._rememberStorageService.set([]);
+        this._tempStorageService.set([]);
+    }
+
+    private _saveLogin (login: string, remember: boolean): void {
+        if (remember) {
+            this._rememberStorageService.set([ login ]);
+        } else {
+            this._tempStorageService.set([ login ]);
+        }
     }
 }
