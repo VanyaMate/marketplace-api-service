@@ -48,10 +48,10 @@ import {
 } from './services/storage-services/product/product.interface';
 import { User } from './services/storage-services/user/user.type';
 import {
-    UserDataGenerator
+    UserDataGenerator,
 } from './services/storage-services/user/user.data-generator';
 import {
-    UserStorageService
+    UserStorageService,
 } from './services/storage-services/user/user-storage.service';
 import { UserMapper } from './services/storage-services/user/user.mapper';
 import { UpdateUserDto } from './services/storage-services/user/user.type';
@@ -61,6 +61,7 @@ import { PublicUser } from './services/storage-services/user/user.type';
 import { IUserMapper } from './services/storage-services/user/user.interface';
 
 
+export * from './services/storage-services/cart/cart.interface';
 export {
     IAuthService,
     IUserService,
@@ -88,5 +89,5 @@ export {
     CategoryDataGenerator,
     ProductDataGenerator,
     User,
-    Product
+    Product,
 };

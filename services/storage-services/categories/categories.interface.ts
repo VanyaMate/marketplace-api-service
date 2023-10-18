@@ -3,5 +3,5 @@ import {
 } from '../../common-services/multiply/multiply-service.interface';
 
 
-export interface ICategoriesService<T> extends IMultiplyService<T> {
+export interface ICategoriesService<Category> extends IMultiplyService<Category> {
 }

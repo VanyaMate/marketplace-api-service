@@ -1,10 +1,10 @@
 import { MultiplyResponse, SearchOptions } from '../common.type';
 
 
-export interface IMultiplyService<T> {
-    findOne (id: string): Promise<T | null>;
+export interface IMultiplyService<Item> {
+    findOne (id: string): Promise<Item | null>;
 
-    findMany (filters: Partial<T>, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
+    findMany (filters: Partial<Item>, options: SearchOptions<Item>): Promise<MultiplyResponse<Item>>;
 
-    findManyByFilter (filter: (product: T) => boolean, options: SearchOptions<T>): Promise<MultiplyResponse<T>>;
+    findManyByFilter (filter: (item: Item) => boolean, options: SearchOptions<Item>): Promise<MultiplyResponse<Item>>;
 }

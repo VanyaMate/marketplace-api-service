@@ -22,13 +22,4 @@ export class CartStorageService<T, C, U> extends SingleService<T, C, U> {
             options,
         );
     }
-
-    addToCart () {
-        return '';
-    }
-
-    removeFromCart () {
-        return '';
-    }
-
 }
