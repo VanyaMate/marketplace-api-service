@@ -1,4 +1,4 @@
-import { IntersectionPropertiesOf2 } from '../common.type';
+import { IntersectionPropertiesOf2 } from '../common.type.ts';
 
 
 export interface ISingleService<T, C, U> {

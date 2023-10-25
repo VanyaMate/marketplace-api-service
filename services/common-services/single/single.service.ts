@@ -1,15 +1,16 @@
-import Separator from '@vanyamate/separator';
-import { ISeparator } from '@vanyamate/separator/separator.interface';
-import { NO_VALID_DATA, NOT_FOUND } from '../../../config/errors.config';
+import { Separator } from '@vanyamate/separator';
+import { ISeparator } from '@vanyamate/separator/separator.interface.ts';
+import { NO_VALID_DATA, NOT_FOUND } from '../../../config/errors.config.ts';
 import {
+    IntersectionPropertiesOf2,
     PK,
-} from '../common.type';
+} from '../common.type.ts';
 import {
     ISingleService,
     SingleServiceOptions,
-} from './single-service.interface';
-import { IStorageService } from '../storage/storage-service.interface';
-import { IDataGenerator } from '../data-generator.interface';
+} from './single-service.interface.ts';
+import { IStorageService } from '../storage/storage-service.interface.ts';
+import { IDataGenerator } from '../data-generator.interface.ts';
 
 
 export class SingleService<T, C, U> implements ISingleService<T, C, U> {
@@ -35,7 +36,9 @@ export class SingleService<T, C, U> implements ISingleService<T, C, U> {
                 const foundItem: T | null = await this._separator
                     .findFirst(
                         this._items,
-                        (item) => item[this._options.options.pk] === createDto[this._options.options.pk],
+                        (item: T) =>
+                            item[this._options.options.pk as IntersectionPropertiesOf2<T, C>] ===
+                            createDto[this._options.options.pk as IntersectionPropertiesOf2<T, C>],
                         {
                             maxOperationsPerStep: 100,
                         },
@@ -65,7 +68,7 @@ export class SingleService<T, C, U> implements ISingleService<T, C, U> {
 
                 for (let i = 0; i < this._items.length; i++) {
                     const item: T = this._items[i];
-                    if (item[this._options.options.pk] === pk) {
+                    if (item[this._options.options.pk as IntersectionPropertiesOf2<T, C>] === pk) {
                         this._items.splice(i, 1);
                         this._storageService.set(this._items);
                         resolve(true);
@@ -89,7 +92,7 @@ export class SingleService<T, C, U> implements ISingleService<T, C, U> {
                 this._separator
                     .findFirst(
                         this._items,
-                        (item) => item[this._options.options.pk] === pk,
+                        (item) => item[this._options.options.pk as IntersectionPropertiesOf2<T, C>] === pk,
                         {
                             maxOperationsPerStep: 100,
                         },
@@ -109,7 +112,7 @@ export class SingleService<T, C, U> implements ISingleService<T, C, U> {
 
                 for (let i = 0; i < this._items.length; i++) {
                     const item: T = this._items[i];
-                    if (item[this._options.options.pk] === pk) {
+                    if (item[this._options.options.pk as IntersectionPropertiesOf2<T, C>] === pk) {
                         const newData  = { ...item, ...updateDto };
                         this._items[i] = newData;
                         this._storageService.set(this._items);

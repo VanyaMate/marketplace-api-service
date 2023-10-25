@@ -1,15 +1,15 @@
-import Separator from '@vanyamate/separator';
-import { ISeparator } from '@vanyamate/separator/separator.interface';
-import { NO_VALID_DATA } from '../../../config/errors.config';
-import { objectFilter } from '../../../utils/object-filter';
+import { Separator } from '@vanyamate/separator';
+import { ISeparator } from '@vanyamate/separator/separator.interface.ts';
+import { NO_VALID_DATA } from '../../../config/errors.config.ts';
+import { objectFilter } from '../../../utils/object-filter.ts';
 import {
     MultiplyResponse,
     SearchOptions,
     SortOption,
-} from '../common.type';
-import { IStorageService } from '../storage/storage-service.interface';
-import { IMultiplyService } from './multiply-service.interface';
-import { MultiplyServiceOptions } from './multiply-service.type';
+} from '../common.type.ts';
+import { IStorageService } from '../storage/storage-service.interface.ts';
+import { IMultiplyService } from './multiply-service.interface.ts';
+import { MultiplyServiceOptions } from './multiply-service.type.ts';
 
 
 export abstract class MultiplyService<T> implements IMultiplyService<T> {
