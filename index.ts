@@ -6,3 +6,5 @@ export type * from './services/common-services/multiply/multiply-service.type';
 export type * from './services/common-services/common.type';
 export type * from './services/common-services/data-generator.interface';
 export * from './config/errors.config';
+export * from './services/common-services/storage/storage.service';
+export type * from './services/common-services/storage/storage-service.interface';
