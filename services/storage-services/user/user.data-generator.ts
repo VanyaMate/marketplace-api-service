@@ -1,5 +1,5 @@
-import { IDataGenerator } from '../../common-services/data-generator.interface';
-import { CreateUserDto, User } from './user.type';
+import { IDataGenerator } from '../../common-services/data-generator.interface.ts';
+import { CreateUserDto, User } from './user.type.ts';
 
 
 export class UserDataGenerator implements IDataGenerator<User, CreateUserDto> {
