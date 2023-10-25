@@ -1,6 +1,6 @@
 {
     "name": "@vanyamate/market-place-service",
-    "version": "0.2.11",
+    "version": "0.2.12",
     "description": "",
     "type": "module",
     "private": false,
@@ -10,7 +10,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@vanyamate/separator": "^0.0.8",
+        "@vanyamate/separator": "^0.0.9",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }
