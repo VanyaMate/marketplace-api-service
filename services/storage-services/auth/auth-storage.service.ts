@@ -1,9 +1,9 @@
 import {
     IStorageService,
-} from '../../common-services/storage/storage-service.interface';
-import { IAuthService } from './auth.interface';
-import { IUserMapper, IUserService } from '../user/user.interface';
-import { NO_VALID_DATA } from '../../../config/errors.config';
+} from '../../common-services/storage/storage-service.interface.ts';
+import { IAuthService } from './auth.interface.ts';
+import { IUserMapper, IUserService } from '../user/user.interface.ts';
+import { NO_VALID_DATA } from '../../../config/errors.config.ts';
 import { AuthStorageServiceOptions } from './auth.type.ts';
 
 

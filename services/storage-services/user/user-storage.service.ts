@@ -1,11 +1,11 @@
-import { IDataGenerator } from '../../common-services/data-generator.interface';
+import { IDataGenerator } from '../../common-services/data-generator.interface.ts';
 import {
     SingleServiceOptions
-} from '../../common-services/single/single-service.interface';
-import { SingleService } from '../../common-services/single/single.service';
+} from '../../common-services/single/single-service.interface.ts';
+import { SingleService } from '../../common-services/single/single.service.ts';
 import {
     IStorageService
-} from '../../common-services/storage/storage-service.interface';
+} from '../../common-services/storage/storage-service.interface.ts';
 
 
 export class UserStorageService<T, C, U> extends SingleService<T, C, U> {

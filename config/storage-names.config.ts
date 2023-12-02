@@ -5,4 +5,6 @@ export enum StorageName {
     USERS      = `${ storageNamePrefix }users`,
     PRODUCTS   = `${ storageNamePrefix }products`,
     CATEGORIES = `${ storageNamePrefix }categories`,
+    CART       = `${ storageNamePrefix }cart`,
+    WISHLIST   = `${ storageNamePrefix }wishlist`,
 }

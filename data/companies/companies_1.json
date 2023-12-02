@@ -1,0 +1,11 @@
+[
+    {
+        "id": "vmstore",
+        "title": "VM Store",
+        "description": "Описания компании",
+        "avatar": "https://i0.wp.com/www.iedunote.com/img/23559/what-is-a-company.jpg?w=1080&quality=100&ssl=1",
+        "admins": [
+            "root"
+        ]
+    }
+]
