@@ -1,7 +1,7 @@
 [
     {
-        "id": "vmbrand",
-        "title": "VM Brand",
+        "title": "Default",
+        "company": "VM Store",
         "description": "Полезная еда, самые свежие продукты",
         "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo-hdCJcJQ5xXcJOoTj5SsXTvbnCGYfY5uO8Ccea8NY71Pm3f41wvWDVLw_JM5qMuPwmE&usqp=CAU",
         "admins": [
